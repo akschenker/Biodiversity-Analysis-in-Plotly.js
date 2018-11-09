@@ -1,1 +1,1 @@
-FLASK_APP=app.py flask run
+FLASK_APP=biodiversity_plotly.app.py flask run
