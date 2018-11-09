@@ -1,1 +1,1 @@
-web: gunicorn biodiversity_plotly.app:app
+web: gunicorn app:app
