@@ -20,8 +20,82 @@ function buildMetadata(sample) {
     })
 
     // BONUS: Build the Gauge Chart
-    // buildGauge(data.WFREQ);
+    buildGauge(metadata.WFREQ);
   });
+}
+
+function buildGauge(wfreq) {
+  // Enter a speed between 0 and 180
+  var level = wfreq * 20;
+
+  // Trig to calc meter point
+  var degrees = 180 - level,
+      radius = .5;
+  var radians = degrees * Math.PI / 180;
+  var x = radius * Math.cos(radians);
+  var y = radius * Math.sin(radians);
+
+  // Path: may have to change to create a better triangle
+  var mainPath = 'M -.0 -0.025 L .0 0.025 L ',
+      pathX = String(x),
+      space = ' ',
+      pathY = String(y),
+      pathEnd = ' Z';
+  var path = mainPath.concat(pathX,space,pathY,pathEnd);
+
+  var data = [{ 
+    type: 'scatter',
+    x: [0], 
+    y:[0],
+    marker: {
+      size: 28, 
+      color:'850000'
+      },
+    showlegend: false,
+    text: level / 20,
+    hoverinfo: 'text'}, { 
+    values: [10, 10, 10, 10, 10, 10, 10, 10, 10, 90],
+    rotation: 90,
+    text: ['8-9', '7-8', '6-7', '5-6', '4-5', '3-4', '2-3', '1-2', '0-1', ''],
+    textinfo: 'text',
+    textposition:'inside',
+    marker: {
+      colors:['rgba(133, 180, 138, .5)', 'rgba(138, 187, 143, .5)',
+              'rgba(140, 191, 136, .5)', 'rgba(183, 204, 146, .5)',
+              'rgba(213, 228, 157, .5)', 'rgba(229, 231, 179, .5)', 
+              'rgba(233, 230, 202, .5)', 'rgba(244, 241, 229, .5)',
+              'rgba(248, 243, 236, .5)','rgba(255, 255, 255, 0)']
+            },
+    labels: ['8-9', '7-8', '6-7', '5-6', '4-5', '3-4', '2-3', '1-2', '0-1', ''],
+    hoverinfo: 'label',
+    hole: .5,
+    type: 'pie',
+    showlegend: false
+  }];
+
+  var layout = {
+    shapes:[{
+        type: 'path',
+        path: path,
+        fillcolor: '850000',
+        line: {
+          color: '850000'
+        }
+      }],
+    title: '<b>Belly Button Washing Frequency</b><br>Scrubs Per Week',
+    height: 500,
+    width: 650,
+    margin: {
+      l: 0,
+      r: 0
+    },
+    xaxis: {zeroline:false, showticklabels:false,
+              showgrid: false, range: [-1, 1]},
+    yaxis: {zeroline:false, showticklabels:false,
+              showgrid: false, range: [-1, 1]}
+  };
+
+  Plotly.newPlot('gauge', data, layout);
 }
 
 function buildCharts(sample) {
@@ -42,7 +116,9 @@ function buildCharts(sample) {
     }];
 
     var bubbleLayout = {
-      title: `Size of Samples for Sample ${sample}`
+      margin: {
+        t: 0
+      }
     }
 
     Plotly.newPlot("bubble", bubbleData, bubbleLayout);
@@ -60,7 +136,13 @@ function buildCharts(sample) {
     }];
 
     var pieLayout = {
-      title: `Top 10 Samples`
+      height: 500,
+      width: 450,
+      margin: {
+        l: 0,
+        t: 0,
+        r: 0
+      }
     }
 
     Plotly.newPlot("pie", pieData, pieLayout);
